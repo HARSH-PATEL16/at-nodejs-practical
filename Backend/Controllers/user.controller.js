@@ -18,29 +18,29 @@ class userController {
             })
 
             if (checkEmail) {
-                res.status(403).send({ Message: MESSAGES.VALIDATION_MESSAGES.EMAIL });
+                res.status(403).send({ message: MESSAGES.VALIDATION_MESSAGES.EMAIL });
                 return;
             }
 
             if (!bodyData?.password) {
-                res.status(403).send({ Message: MESSAGES.VALIDATION_MESSAGES.PASSWORD });
+                res.status(403).send({ message: MESSAGES.VALIDATION_MESSAGES.PASSWORD });
                 return;
             }
 
             if (!bodyData?.confirm_password) {
-                res.status(403).send({ Message: MESSAGES.VALIDATION_MESSAGES.CONFIRM_PASSWORD });
+                res.status(403).send({ message: MESSAGES.VALIDATION_MESSAGES.CONFIRM_PASSWORD });
                 return;
             }
 
             if (bodyData?.password !== bodyData?.confirm_password) {
-                res.status(403).send({ Message: MESSAGES.VALIDATION_MESSAGES.NOT_SAME });
+                res.status(403).send({ message: MESSAGES.VALIDATION_MESSAGES.NOT_SAME });
                 return;
             }
 
             bodyData.password = await bcrypt.hash(bodyData?.password, 10);
 
             let userData = await user.create(bodyData);
-            res.status(200).send({ Message: MESSAGES.USER.SIGN_UP, data: userData });
+            res.status(200).send({ message: MESSAGES.USER.SIGN_UP, data: userData });
         } catch (error) {
             if (error) {
                 res.status(422).send(error);
@@ -60,14 +60,14 @@ class userController {
             })
 
             if (!checkUser) {
-                res.status(403).send({ Message: MESSAGES.USER.NOT_REGISTERED });
+                res.status(403).send({ message: MESSAGES.USER.NOT_REGISTERED });
                 return;
             }
 
             let checkPassword = await bcrypt.compare(bodyData?.password, checkUser?.password);
 
             if (!checkPassword) {
-                res.status(403).send({ Message: MESSAGES.VALIDATION_MESSAGES.INCORRECT });
+                res.status(403).send({ message: MESSAGES.VALIDATION_MESSAGES.INCORRECT });
                 return;
             }
 
@@ -77,7 +77,7 @@ class userController {
 
             checkUser.dataValues.token = token
 
-            res.status(200).send({ Message: MESSAGES.USER.SIGN_IN, data: checkUser });
+            res.status(200).send({ message: MESSAGES.USER.SIGN_IN, data: checkUser });
         } catch (error) {
             if (error) {
                 res.status(422).send(error);
@@ -116,7 +116,6 @@ class userController {
         try {
             let authToken = req?.headers?.authorization
             let bodyData = req.body
-            console.log('bodyData: ', bodyData);
 
             let getUserId = await userToken.findOne({
                 where: {
@@ -130,14 +129,14 @@ class userController {
                 }
             })
 
-            let matchPassword = await bcrypt.compare(bodyData?.old_password, checkPassword?.password);
+            let matchPassword = await bcrypt.compare(bodyData?.current_password, checkPassword?.password);
             if (!matchPassword) {
-                res.status(422).send({ Message: MESSAGES.PASSWORD.OLDINCORRECT });
+                res.status(422).send({ message: MESSAGES.PASSWORD.OLD_INCORRECT });
                 return;
             }
 
             if (bodyData.new_password !== bodyData.confirm_password) {
-                res.status(422).send({ Message: MESSAGES.PASSWORD.NOT_SAME })
+                res.status(422).send({ message: MESSAGES.PASSWORD.NOT_SAME })
                 return;
             }
 
@@ -149,7 +148,7 @@ class userController {
                 }
             });
 
-            res.status(200).send({ Message: MESSAGES.PASSWORD.CHANGED })
+            res.status(200).send({ message: MESSAGES.PASSWORD.CHANGED })
         } catch (error) {
             if (error) {
                 res.status(422).send(error);
@@ -160,7 +159,6 @@ class userController {
     // Signout
     async signOut(req, res) {
         let token = req?.headers?.authorization
-        console.log('token: ', token);
 
         let deleteToken = await userToken.destroy({
             where: {
@@ -168,7 +166,7 @@ class userController {
             }
         });
 
-        res.status(200).send({ Message: MESSAGES.USER.SIGN_OUT })
+        res.status(200).send({ message: MESSAGES.USER.SIGN_OUT })
     }
 }
 

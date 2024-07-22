@@ -34,10 +34,10 @@ const handleRegisterFormSubmit = async () => {
         let response = await axios.post("http://localhost:5000/user/sign_up", data);
         if (response?.status === 200) {
             window.location = './login.html';
-            alert(response?.data?.Message);
+            alert(response?.data?.message);
         }
     } catch (err) {
-        alert(err?.response?.data?.Message);
+        alert(err?.response?.data?.message);
     }
 }
 
@@ -56,10 +56,10 @@ const handleLoginFormSubmit = async () => {
         if (response?.status === 200) {
             localStorage.setItem('userData', JSON.stringify(response?.data?.data));
             window.location = './dashboard.html';
-            alert(response?.data?.Message);
+            alert(response?.data?.message);
         }
     } catch (err) {
-        alert(err?.response?.data?.Message);
+        alert(err?.response?.data?.message);
     }
 }
 
@@ -72,14 +72,14 @@ const handleChangePassword = async () => {
         return;
     }
 
-    let old_password = document.getElementById('current_password').value;
+    let current_password = document.getElementById('current_password').value;
     let new_password = document.getElementById('new_password').value;
     let confirm_password = document.getElementById('confirm_password').value;
     let headers = {
         authorization: userData?.token
     }
     const data = {
-        old_password,
+        current_password,
         new_password,
         confirm_password
     };
@@ -88,12 +88,12 @@ const handleChangePassword = async () => {
         let response = await axios.post("http://localhost:5000/user/change_password", data, { headers: headers });
 
         if (response?.status === 200) {
-            alert(response?.data?.Message);
+            alert(response?.data?.message);
             document.getElementById('change_password').reset();
         }
 
     } catch (err) {
-        alert(err?.response?.data?.Message);
+        alert(err?.response?.data?.message);
     }
 }
 
@@ -108,9 +108,9 @@ const logout = async () => {
         if (response?.status === 200) {
             localStorage.clear('userData');
             window.location = './login.html';
-            alert(response?.data?.Message);
+            alert(response?.data?.message);
         }
     } catch (err) {
-        alert(err?.response?.data?.Message);
+        alert(err?.response?.data?.message);
     }
 }
