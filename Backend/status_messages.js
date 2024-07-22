@@ -19,13 +19,15 @@ exports.MESSAGES = {
     },
 
     PASSWORD: {
-        NOT_SAME: "New password and confirm new password are not same.",
-        OLD_INCORRECT: "Old password is incorrect.",
+        NOT_SAME: "New password and confirm password are not same.",
+        CURRENT_INCORRECT: "Current password is incorrect.",
         CHANGED: "Password has been changed successfully.",
     },
 
     USER: {
         NOT_REGISTERED: "User is not registered with us.",
+        INACTIVE: "User is not active.",
+        DELETED: "User is not available in our system.",
         SIGN_UP: "You have successfully signed up.",
         SIGN_IN: "You have successfully signed in.",
         SIGN_OUT: "You have successfully signed out.",

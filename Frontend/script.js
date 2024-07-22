@@ -1,15 +1,28 @@
-let pathArray = window.location.pathname.split('/');
-if (pathArray[pathArray.length - 1] === 'dashboard.html') {
-    let userData = JSON.parse(localStorage.getItem('userData'));
-    if (userData) {
-        document.getElementById('full_name').innerHTML = userData?.first_name + " " + userData?.last_name;
-        document.getElementById('f_name').innerHTML = userData?.first_name;
-        document.getElementById('l_name').innerHTML = userData?.last_name;
-        document.getElementById('u_name').innerHTML = userData?.username;
-        document.getElementById('_email').innerHTML = userData?.email;
+const userDetails = async () => {
+    let token = localStorage.getItem('token');
+    if (token) {
+        try {
+            let response = await axios.get("http://localhost:5000/user/details", {headers: { authorization: token }});
+            if (response?.status === 200) {
+                let userData = response?.data;
+                document.getElementById('full_name').innerHTML = userData?.first_name + " " + userData?.last_name;
+                document.getElementById('f_name').innerHTML = userData?.first_name;
+                document.getElementById('l_name').innerHTML = userData?.last_name;
+                document.getElementById('u_name').innerHTML = userData?.username;
+                document.getElementById('_email').innerHTML = userData?.email;
+            }
+        } catch (err) {
+            alert(err?.response?.data?.message);
+            window.location = './login.html';
+        }
     } else {
         window.location = './login.html';
     }
+}
+
+let pathArray = window.location.pathname.split('/');
+if (pathArray[pathArray.length - 1] === 'dashboard.html') {
+    userDetails();
 }
 
 const handleRegisterFormSubmit = async () => {
@@ -54,7 +67,7 @@ const handleLoginFormSubmit = async () => {
     try {
         let response = await axios.post("http://localhost:5000/user/sign_in", data);
         if (response?.status === 200) {
-            localStorage.setItem('userData', JSON.stringify(response?.data?.data));
+            localStorage.setItem('token', response?.data?.data?.token);
             window.location = './dashboard.html';
             alert(response?.data?.message);
         }
@@ -65,8 +78,8 @@ const handleLoginFormSubmit = async () => {
 
 const handleChangePassword = async () => {
     event.preventDefault();
-    let userData = JSON.parse(localStorage.getItem('userData'));
-    if(!userData) {
+    let token = localStorage.getItem('token');
+    if (!token) {
         alert('Something went wrong!\nPlease Login again to continue.');
         window.location = './login.html';
         return;
@@ -76,7 +89,7 @@ const handleChangePassword = async () => {
     let new_password = document.getElementById('new_password').value;
     let confirm_password = document.getElementById('confirm_password').value;
     let headers = {
-        authorization: userData?.token
+        authorization: token
     }
     const data = {
         current_password,
@@ -98,15 +111,15 @@ const handleChangePassword = async () => {
 }
 
 const logout = async () => {
-    let userData = JSON.parse(localStorage.getItem('userData'));
+    let token = localStorage.getItem('token');
     let headers = {
-        authorization: userData?.token
+        authorization: token
     }
     try {
         let response = await axios.get("http://localhost:5000/user/sign_out", { headers: headers });
 
         if (response?.status === 200) {
-            localStorage.clear('userData');
+            localStorage.clear('token');
             window.location = './login.html';
             alert(response?.data?.message);
         }

@@ -19,7 +19,7 @@ router.route('/user/sign_up').post(validate([
 
 // User signin
 router.route('/user/sign_in').post(validate([
-    body('email').notEmpty().withMessage(MESSAGES.VALIDATION_MESSAGES.EMAIL),
+    body('email').notEmpty().withMessage(MESSAGES.VALIDATION_MESSAGES.EMAIL_VALIDATE),
     body('email').isEmail().withMessage(MESSAGES.VALIDATION_MESSAGES.INVALID_EMAIL),
     body('password').notEmpty().withMessage(MESSAGES.VALIDATION_MESSAGES.PASSWORD),
 ]), userController.signIn);
@@ -29,7 +29,7 @@ router.route('/user/details').get(userController.getUserDetails);
 
 // Change user password
 router.route('/user/change_password').post(validate([
-    body('current_password').notEmpty().withMessage(MESSAGES.VALIDATION_MESSAGES.PASSWORD),
+    body('current_password').notEmpty().withMessage(MESSAGES.VALIDATION_MESSAGES.CURRENT_PASS),
     body('new_password').notEmpty().withMessage(MESSAGES.VALIDATION_MESSAGES.NEW_PASSWORD),
     body('new_password').isLength({ min: 8, max: 10 }).withMessage(MESSAGES.VALIDATION_MESSAGES.NEW_PASSWORD_LENGTH),
     body('confirm_password').notEmpty().withMessage(MESSAGES.VALIDATION_MESSAGES.CONFIRM_PASSWORD),

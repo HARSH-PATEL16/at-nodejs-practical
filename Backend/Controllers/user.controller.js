@@ -64,6 +64,16 @@ class userController {
                 return;
             }
 
+            if (checkUser?.is_active === STATUS.INACTIVE) {
+                res.status(403).send({ message: MESSAGES.USER.INACTIVE });
+                return;
+            }
+
+            if (checkUser?.is_delete === STATUS.DELETED) {
+                res.status(403).send({ message: MESSAGES.USER.DELETED });
+                return;
+            }
+
             let checkPassword = await bcrypt.compare(bodyData?.password, checkUser?.password);
 
             if (!checkPassword) {
@@ -131,7 +141,7 @@ class userController {
 
             let matchPassword = await bcrypt.compare(bodyData?.current_password, checkPassword?.password);
             if (!matchPassword) {
-                res.status(422).send({ message: MESSAGES.PASSWORD.OLD_INCORRECT });
+                res.status(422).send({ message: MESSAGES.PASSWORD.CURRENT_INCORRECT });
                 return;
             }
 
