@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="./style.css">
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <title>Registration Page</title>
+</head>
+
+<body class="d-flex justify-content-center align-items-center min-vh-100 py-5">
+  <div class="card w-50 shadow">
+    <div class="card-header text-center">
+      Registration
+    </div>
+    <div class="card-body">
+      <form method="post" autocomplete="off" onsubmit="handleRegisterFormSubmit()">
+        <!-- First Name  -->
+        <div class="form-group">
+          <label for="first_name">First Name</label> <span class="asterisk"> * </span>
+          <input type="text" class="form-control" name="first_name" id="first_name" placeholder="Enter First Name"
+            required>
+        </div>
+
+        <!-- Last Name  -->
+        <div class="form-group">
+          <label for="last_name">Last Name</label> <span class="asterisk"> * </span>
+          <input type="text" class="form-control" name="last_name" id="last_name" placeholder="Enter Last Name"
+            required>
+        </div>
+
+        <!-- Username  -->
+        <div class="form-group">
+          <label for="username">Username</label> <span class="asterisk"> * </span>
+          <input type="text" class="form-control" name="username" id="username" placeholder="Enter Username" required>
+        </div>
+
+        <!-- Email  -->
+        <div class="form-group">
+          <label for="email">Email</label> <span class="asterisk"> * </span>
+          <input type="email" class="form-control" name="email" id="email" placeholder="Enter Email" required>
+        </div>
+
+        <!-- Password  -->
+        <div class="form-group">
+          <label for="password">Password</label> <span class="asterisk"> * </span>
+          <input type="password" class="form-control" name="password" id="password" placeholder="Enter Password"
+            required>
+        </div>
+
+        <!-- Confirm Password  -->
+        <div class="form-group">
+          <label for="confirm_password">Confirm Password</label> <span class="asterisk"> * </span>
+          <input type="password" class="form-control" name="confirm_password" id="confirm_password"
+            placeholder="Enter Confirm Password" required>
+        </div>
+
+        <!-- Submit  -->
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <p class="mt-3 text-secondary"> Already have an account? <a href="./login.html"> Login </a> </p>
+      </form>
+    </div>
+  </div>
+  <script src="./script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
