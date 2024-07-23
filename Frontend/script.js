@@ -1,10 +1,11 @@
+// Get user details
 const userDetails = async () => {
     let token = localStorage.getItem('token');
     if (token) {
         try {
             let response = await axios.get("http://localhost:5000/user/details", {headers: { authorization: token }});
             if (response?.status === 200) {
-                let userData = response?.data;
+                let userData = response?.data?.user;
                 document.getElementById('full_name').innerHTML = userData?.first_name + " " + userData?.last_name;
                 document.getElementById('f_name').innerHTML = userData?.first_name;
                 document.getElementById('l_name').innerHTML = userData?.last_name;
@@ -25,6 +26,7 @@ if (pathArray[pathArray.length - 1] === 'dashboard.html') {
     userDetails();
 }
 
+// User registration form
 const handleRegisterFormSubmit = async () => {
     event.preventDefault();
     let first_name = document.getElementById('first_name').value;
@@ -54,6 +56,7 @@ const handleRegisterFormSubmit = async () => {
     }
 }
 
+// User log in
 const handleLoginFormSubmit = async () => {
     event.preventDefault();
     let email = document.getElementById('email').value;
@@ -76,6 +79,7 @@ const handleLoginFormSubmit = async () => {
     }
 }
 
+// Change password
 const handleChangePassword = async () => {
     event.preventDefault();
     let token = localStorage.getItem('token');
@@ -110,6 +114,7 @@ const handleChangePassword = async () => {
     }
 }
 
+// Logout
 const logout = async () => {
     let token = localStorage.getItem('token');
     let headers = {

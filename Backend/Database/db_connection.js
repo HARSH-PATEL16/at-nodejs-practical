@@ -16,7 +16,7 @@ const DB_CREDENTIAL = {
     seederStorageTableName: "SequelizeMetaSeeders"
 }
 
-sequelize = new Sequelize(DB_CREDENTIAL);
+const sequelize = new Sequelize(DB_CREDENTIAL);
 sequelize.authenticate()
     .then(() => {
         console.log('Database connected..')
@@ -26,7 +26,4 @@ sequelize.authenticate()
     })
 
 
-module.exports = {
-    development: DB_CREDENTIAL,
-    database: sequelize,
-}
+module.exports = sequelize;

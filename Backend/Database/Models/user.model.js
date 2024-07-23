@@ -1,4 +1,7 @@
 const {Sequelize, DataTypes} = require("sequelize");
+const userToken = require("./user_token.model");
+const sequelize = require("../db_connection");
+
 const User = sequelize.define("users", {
     id: {
         allowNull: false,
@@ -48,5 +51,6 @@ const User = sequelize.define("users", {
         allowNull: false,
         type: DataTypes.DATE,
     },
-})
+});
+
 module.exports = User;

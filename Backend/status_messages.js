@@ -1,6 +1,5 @@
 exports.MESSAGES = {
     VALIDATION_MESSAGES: {
-        EXIST: "User is already exists.",
         EMAIL: "Email is already registered.",
         EMAIL_VALIDATE: "Please enter email.",
         USERNAME: "Username is already exist.",
@@ -35,8 +34,6 @@ exports.MESSAGES = {
 }
 
 exports.STATUS = {
-    ACTIVE: 1,
     INACTIVE: 0,
     DELETED: 1,
-    NOTDELETED: 0
 }

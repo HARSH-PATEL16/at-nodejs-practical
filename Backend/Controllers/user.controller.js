@@ -1,3 +1,4 @@
+const { UserTokenAssociation, UserAssociation } = require('../Database/Models/association.model');
 const user = require('../Database/Models/user.model');
 const userToken = require('../Database/Models/user_token.model');
 const { MESSAGES, STATUS } = require('../status_messages');
@@ -15,20 +16,21 @@ class userController {
                 where: {
                     email: bodyData?.email
                 }
-            })
+            });
 
             if (checkEmail) {
                 res.status(403).send({ message: MESSAGES.VALIDATION_MESSAGES.EMAIL });
                 return;
             }
 
-            if (!bodyData?.password) {
-                res.status(403).send({ message: MESSAGES.VALIDATION_MESSAGES.PASSWORD });
-                return;
-            }
+            let checkUsername = await user.findOne({
+                where: {
+                    username: bodyData?.username
+                }
+            });
 
-            if (!bodyData?.confirm_password) {
-                res.status(403).send({ message: MESSAGES.VALIDATION_MESSAGES.CONFIRM_PASSWORD });
+            if (checkUsername) {
+                res.status(403).send({ message: MESSAGES.VALIDATION_MESSAGES.USERNAME });
                 return;
             }
 
@@ -48,22 +50,29 @@ class userController {
         }
     }
 
-    // Signin
+    // Sign in
     async signIn(req, res) {
         try {
-            let bodyData = req?.body
+            let bodyData = req?.body;
 
             let checkUser = await user.findOne({
                 where: {
                     email: bodyData?.email
                 }
-            })
+            });
 
             if (!checkUser) {
                 res.status(403).send({ message: MESSAGES.USER.NOT_REGISTERED });
                 return;
             }
-
+            
+            let checkPassword = await bcrypt.compare(bodyData?.password, checkUser?.password);
+            
+            if (!checkPassword) {
+                res.status(403).send({ message: MESSAGES.VALIDATION_MESSAGES.INCORRECT });
+                return;
+            }
+            
             if (checkUser?.is_active === STATUS.INACTIVE) {
                 res.status(403).send({ message: MESSAGES.USER.INACTIVE });
                 return;
@@ -74,18 +83,11 @@ class userController {
                 return;
             }
 
-            let checkPassword = await bcrypt.compare(bodyData?.password, checkUser?.password);
+            let token = jwt.sign({ email: bodyData?.email }, process.env.SECRET_KEY);
 
-            if (!checkPassword) {
-                res.status(403).send({ message: MESSAGES.VALIDATION_MESSAGES.INCORRECT });
-                return;
-            }
+            await userToken.create({ user_id: checkUser?.id, access_token: token });
 
-            let token = await jwt.sign({ email: bodyData?.email }, process.env.SECRET_KEY);
-
-            let userTkn = await userToken.create({ user_id: checkUser?.id, access_token: token });
-
-            checkUser.dataValues.token = token
+            checkUser.dataValues.token = token;
 
             res.status(200).send({ message: MESSAGES.USER.SIGN_IN, data: checkUser });
         } catch (error) {
@@ -98,18 +100,15 @@ class userController {
     // Get user details
     async getUserDetails(req, res) {
         try {
-            let authToken = req?.headers?.authorization
+            let authToken = req?.headers?.authorization;
 
-            let getUserId = await userToken.findOne({
+            let userDetails = await UserTokenAssociation.findOne({
                 where: {
                     access_token: authToken
-                }
-            });
-
-            let userDetails = await user.findOne({
-                attributes: { exclude: ['createdAt', 'updatedAt', 'password'] },
-                where: {
-                    id: getUserId?.user_id
+                },
+                include: {
+                    model: UserAssociation,
+                    attributes: { exclude: ['createdAt', 'updatedAt', 'password'] }
                 }
             });
 
@@ -124,8 +123,8 @@ class userController {
     // Change password
     async changePassword(req, res) {
         try {
-            let authToken = req?.headers?.authorization
-            let bodyData = req.body
+            let authToken = req?.headers?.authorization;
+            let bodyData = req?.body;
 
             let getUserId = await userToken.findOne({
                 where: {
@@ -152,9 +151,9 @@ class userController {
 
             let hashPassword = await bcrypt.hash(bodyData?.new_password, 10)
 
-            let updatePassword = await user.update({ password: hashPassword }, {
+            await user.update({ password: hashPassword }, {
                 where: {
-                    id: getUserId.user_id
+                    id: getUserId?.user_id
                 }
             });
 
@@ -166,11 +165,11 @@ class userController {
         }
     }
 
-    // Signout
+    // Sign out
     async signOut(req, res) {
         let token = req?.headers?.authorization
 
-        let deleteToken = await userToken.destroy({
+        await userToken.destroy({
             where: {
                 access_token: token
             }

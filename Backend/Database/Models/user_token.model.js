@@ -1,5 +1,8 @@
 const { Sequelize, DataTypes } = require("sequelize");
-const user_tokens = sequelize.define("user_tokens", {
+const User = require("./user.model");
+const sequelize = require("../db_connection");
+
+const userToken = sequelize.define("user_tokens", {
     id: {
         allowNull: false,
         autoIncrement: true,
@@ -24,5 +27,6 @@ const user_tokens = sequelize.define("user_tokens", {
         allowNull: false,
         type: Sequelize.DATE,
     },
-})
-module.exports = user_tokens;
+});
+
+module.exports = userToken;
