@@ -117,6 +117,11 @@ const handleChangePassword = async () => {
 // Logout
 const logout = async () => {
     let token = localStorage.getItem('token');
+    if (!token) {
+        alert('Something went wrong!\nPlease Login again to continue.');
+        window.location = './login.html';
+        return;
+    }
     let headers = {
         authorization: token
     }
