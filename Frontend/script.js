@@ -3,9 +3,10 @@ const userDetails = async () => {
     let token = localStorage.getItem('token');
     if (token) {
         try {
-            let response = await axios.get("http://localhost:5000/user/details", {headers: { authorization: token }});
+            let response = await axios.get("http://localhost:5000/user/details", { headers: { authorization: token } });
+            console.log('response: ', response);
             if (response?.status === 200) {
-                let userData = response?.data?.user;
+                let userData = response?.data[0];
                 document.getElementById('full_name').innerHTML = userData?.first_name + " " + userData?.last_name;
                 document.getElementById('f_name').innerHTML = userData?.first_name;
                 document.getElementById('l_name').innerHTML = userData?.last_name;
@@ -70,7 +71,7 @@ const handleLoginFormSubmit = async () => {
     try {
         let response = await axios.post("http://localhost:5000/user/sign_in", data);
         if (response?.status === 200) {
-            localStorage.setItem('token', response?.data?.data?.token);
+            localStorage.setItem('token', response?.data?.token);
             window.location = './dashboard.html';
             alert(response?.data?.message);
         }

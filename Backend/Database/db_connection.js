@@ -1,29 +1,21 @@
+let mySql = require('mysql');
 require('dotenv').config();
-const Sequelize = require('sequelize');
 
-const DB_CREDENTIAL = {
-    username: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE,
+
+let con = mySql.createConnection({
     host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    logging: process.env.DB_LOGGING === 'true' ? console.log : false,
-    dialect: process.env.DB_CONNECTION,
-    dialectOptions: {
-        decimalNumbers: true
-    },
-    seederStorage: "sequelize",
-    seederStorageTableName: "SequelizeMetaSeeders"
-}
+    user: process.env.DB_USERNAME,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_DATABASE
+})
 
-const sequelize = new Sequelize(DB_CREDENTIAL);
-sequelize.authenticate()
-    .then(() => {
-        console.log('Database connected..')
-    })
-    .catch(err => {
-        console.log('Database connecting error..' + err)
-    })
+con.connect((err) => {
+    if (err) {
+        console.log(err);
+    }
+    else {
+        console.log("Database Connected!!!!!");
+    }
+})
 
-
-module.exports = sequelize;
+module.exports = con;
