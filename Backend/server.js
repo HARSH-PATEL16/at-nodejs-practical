@@ -14,7 +14,8 @@ app.use(express.json());
 const userRoutes =  require('./Routes/user');
 app.use(userRoutes);
 
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 3000;
+
 // Server
 server.listen(PORT, () => {
     console.log(`server is running on port ${PORT}`)
