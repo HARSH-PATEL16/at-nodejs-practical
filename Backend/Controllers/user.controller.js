@@ -11,7 +11,7 @@ class userController {
         try {
             let bodyData = req?.body;
 
-            let checkEmailQry = `select * from users where email = '${bodyData?.email}'`
+            let checkEmailQry = `SELECT * FROM users WHERE email = '${bodyData?.email}' LIMIT 1`;
             con.query(checkEmailQry, async (error, result) => {
                 if (error) {
                     console.log(error);
@@ -21,7 +21,7 @@ class userController {
                         return;
                     }
 
-                    let checkUsernameQry = `select * from users where username = '${bodyData?.username}'`
+                    let checkUsernameQry = `SELECT * FROM users WHERE username = '${bodyData?.username}' LIMIT 1`;
                     con.query(checkUsernameQry, async (error, result) => {
                         if (error) {
                             console.log(error);
@@ -38,14 +38,14 @@ class userController {
 
                             bodyData.password = await bcrypt.hash(bodyData?.password, 10);
 
-                            let registrationDataQry = `INSERT INTO users (first_name, last_name, username, email, password) VALUES ('${bodyData?.first_name}', '${bodyData?.last_name}', '${bodyData?.username}', '${bodyData?.email}', '${bodyData?.password}')`
+                            let registrationDataQry = `INSERT INTO users (first_name, last_name, username, email, password) VALUES ('${bodyData?.first_name}', '${bodyData?.last_name}', '${bodyData?.username}', '${bodyData?.email}', '${bodyData?.password}')`;
                             con.query(registrationDataQry, (error, result) => {
                                 if (error) {
                                     console.log(error);
                                 } else {
                                     res.status(200).send({ message: MESSAGES.USER.SIGN_UP, data: result });
                                 }
-                            })
+                            });
                         }
                     });
                 }
@@ -62,7 +62,7 @@ class userController {
         try {
             let bodyData = req?.body;
 
-            let checkEmailQry = `select * from users where email = '${bodyData?.email}'`
+            let checkEmailQry = `SELECT * FROM users WHERE email = '${bodyData?.email}' LIMIT 1`;
             con.query(checkEmailQry, async (error, result) => {
                 if (error) {
                     console.log(error);
@@ -90,17 +90,17 @@ class userController {
                     }
 
                     let token = jwt.sign({ email: bodyData?.email }, process.env.SECRET_KEY);
-                    
-                    let tokenQry = `INSERT INTO user_tokens (user_id, access_token) VALUES ('${result[0]?.id}', '${token}')`
+
+                    let tokenQry = `INSERT INTO user_tokens (user_id, access_token) VALUES ('${result[0]?.id}', '${token}')`;
                     con.query(tokenQry, (error, result) => {
                         if (error) {
                             console.log(error);
                         } else {
                             res.status(200).send({ message: MESSAGES.USER.SIGN_IN, token: token });
                         }
-                    })
+                    });
                 }
-            })
+            });
         } catch (error) {
             if (error) {
                 res.status(422).send(error);
@@ -113,16 +113,16 @@ class userController {
         try {
             let authToken = req?.headers?.authorization;
 
-            let getUserDataQry = `SELECT users.first_name, users.last_name, users.username, users.email FROM user_tokens AS user_tokens JOIN users AS users ON
-            user_tokens.user_id = users.id WHERE user_tokens.access_token = '${authToken}'`
+            let getUserDataQry = `SELECT users.first_name, users.last_name, users.username, users.email FROM user_tokens AS user_tokens INNER JOIN users AS users ON
+            user_tokens.user_id = users.id WHERE user_tokens.access_token = '${authToken}' LIMIT 1`;
             con.query(getUserDataQry, (error, result) => {
                 if (error) {
                     console.log(error);
                 }
                 else {
-                    res.status(200).send(result)
+                    res.status(200).send(result);
                 }
-            })
+            });
 
         } catch (error) {
             if (error) {
@@ -137,8 +137,8 @@ class userController {
             let authToken = req?.headers?.authorization;
             let bodyData = req?.body;
 
-            let getUserDataQry = `SELECT users.id, users.password FROM user_tokens AS user_tokens JOIN users AS users ON
-            user_tokens.user_id = users.id WHERE user_tokens.access_token = '${authToken}'`
+            let getUserDataQry = `SELECT users.id, users.password FROM user_tokens AS user_tokens INNER JOIN users AS users ON
+            user_tokens.user_id = users.id WHERE user_tokens.access_token = '${authToken}' LIMIT 1`;
             con.query(getUserDataQry, async (error, result) => {
                 if (error) {
                     console.log(error);
@@ -151,21 +151,21 @@ class userController {
                     }
 
                     if (bodyData?.new_password !== bodyData?.confirm_password) {
-                        res.status(422).send({ message: MESSAGES.PASSWORD.NOT_SAME })
+                        res.status(422).send({ message: MESSAGES.PASSWORD.NOT_SAME });
                         return;
                     }
 
-                    let hashPassword = await bcrypt.hash(bodyData?.new_password, 10)
+                    let hashPassword = await bcrypt.hash(bodyData?.new_password, 10);
 
-                    let updatePassQry = `UPDATE users SET password = '${hashPassword}' WHERE id = '${result[0]?.id}'`
+                    let updatePassQry = `UPDATE users SET password = '${hashPassword}' WHERE id = '${result[0]?.id}'`;
                     con.query(updatePassQry, (error, result) => {
                         if (error) {
                             console.log(error);
                         }
                         else {
-                            res.status(200).send({ message: MESSAGES.PASSWORD.CHANGED })
+                            res.status(200).send({ message: MESSAGES.PASSWORD.CHANGED });
                         }
-                    })
+                    });
                 }
             })
         } catch (error) {
@@ -177,17 +177,17 @@ class userController {
 
     // Sign out
     async signOut(req, res) {
-        let authToken = req?.headers?.authorization
+        let authToken = req?.headers?.authorization;
 
-        let deleteQry = `delete from user_tokens where access_token = '${authToken}'`
+        let deleteQry = `DELETE FROM user_tokens WHERE access_token = '${authToken}'`;
         con.query(deleteQry, (error, result) => {
             if (error) {
                 console.log(error);
             }
             else {
-                res.status(200).send({ message: MESSAGES.USER.SIGN_OUT })
+                res.status(200).send({ message: MESSAGES.USER.SIGN_OUT });
             }
-        })
+        });
     }
 }
 

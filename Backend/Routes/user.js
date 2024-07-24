@@ -13,7 +13,7 @@ router.route('/user/sign_up').post(validate([
     body('email').notEmpty().withMessage(MESSAGES.VALIDATION_MESSAGES.EMAIL_VALIDATE),
     body('email').isEmail().withMessage(MESSAGES.VALIDATION_MESSAGES.INVALID_EMAIL),
     body('password').notEmpty().withMessage(MESSAGES.VALIDATION_MESSAGES.PASSWORD),
-    body('password').isLength({ min: 8, max: 10 }).withMessage(MESSAGES.VALIDATION_MESSAGES.PASSWORD_LENGTH),
+    body('password').isLength({ min: 8 }).withMessage(MESSAGES.VALIDATION_MESSAGES.PASSWORD_LENGTH),
     body('confirm_password').notEmpty().withMessage(MESSAGES.VALIDATION_MESSAGES.CONFIRM_PASSWORD),
 ]), userController.signUp);
 
@@ -31,7 +31,7 @@ router.route('/user/details').get(userController.getUserDetails);
 router.route('/user/change_password').post(validate([
     body('current_password').notEmpty().withMessage(MESSAGES.VALIDATION_MESSAGES.CURRENT_PASS),
     body('new_password').notEmpty().withMessage(MESSAGES.VALIDATION_MESSAGES.NEW_PASSWORD),
-    body('new_password').isLength({ min: 8, max: 10 }).withMessage(MESSAGES.VALIDATION_MESSAGES.NEW_PASSWORD_LENGTH),
+    body('new_password').isLength({ min: 8 }).withMessage(MESSAGES.VALIDATION_MESSAGES.NEW_PASSWORD_LENGTH),
     body('confirm_password').notEmpty().withMessage(MESSAGES.VALIDATION_MESSAGES.CONFIRM_PASSWORD),
 ]), userController.changePassword);
 

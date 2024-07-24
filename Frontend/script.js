@@ -4,7 +4,6 @@ const userDetails = async () => {
     if (token) {
         try {
             let response = await axios.get("http://localhost:5000/user/details", { headers: { authorization: token } });
-            console.log('response: ', response);
             if (response?.status === 200) {
                 let userData = response?.data[0];
                 document.getElementById('full_name').innerHTML = userData?.first_name + " " + userData?.last_name;
